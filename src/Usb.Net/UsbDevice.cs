@@ -71,23 +71,27 @@ namespace Usb.Net
             _IsClosing = false;
         }
 
-        public sealed override void Dispose()
+        protected sealed override void Dispose(bool disposing)
         {
-            if (disposed) return;
+            if (disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                Close();
+            }
+
             disposed = true;
-
-            Close();
-
-            base.Dispose();
-
-            GC.SuppressFinalize(this);
+            base.Dispose(disposing);
         }
         #endregion
 
         #region Finalizer
         ~UsbDevice()
         {
-            Dispose();
+            Dispose(false);
         }
         #endregion
     }

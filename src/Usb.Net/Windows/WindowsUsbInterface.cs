@@ -52,16 +52,28 @@ namespace Usb.Net.Windows
             });
         }
 
-        public void Dispose()
+        protected virtual void Dispose(bool disposing)
         {
             if (_IsDisposed) return;
-            _IsDisposed = true;
 
-            //This is a native resource, so the IDisposable pattern should probably be implemented...
             var isSuccess = WinUsbApiCalls.WinUsb_Free(_SafeFileHandle);
-            WindowsDeviceBase.HandleError(isSuccess, "Interface could not be disposed");
+            if (disposing)
+            {
+                WindowsDeviceBase.HandleError(isSuccess, "Interface could not be disposed");
+            }
 
+            _IsDisposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        ~WindowsUsbInterface()
+        {
+            Dispose(false);
         }
         #endregion
     }

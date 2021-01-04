@@ -119,14 +119,24 @@ namespace Device.Net
             return retVal;
         }
 
-        public virtual void Dispose()
+        protected virtual void Dispose(bool disposing)
         {
-            if (disposed) return;
+            if (disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                _WriteAndReadLock.Dispose();
+            }
 
             disposed = true;
+        }
 
-            _WriteAndReadLock.Dispose();
-
+        public void Dispose()
+        {
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
         #endregion
@@ -134,7 +144,7 @@ namespace Device.Net
         #region Finalizer
         ~DeviceBase()
         {
-            Dispose();
+            Dispose(false);
         }
         #endregion
     }
