@@ -60,9 +60,10 @@ namespace Usb.Net.Windows
 
                 Logger?.Log(Messages.SuccessMessageGotWriteAndReadHandle, nameof(WindowsUsbInterfaceManager), null, LogLevel.Information);
 
-                var isSuccess = WinUsbApiCalls.WinUsb_Initialize(_DeviceHandle, out var defaultInterfaceHandle);
+                var isSuccess = WinUsbApiCalls.WinUsb_Initialize(_DeviceHandle, out var interfaceHandle);
                 WindowsDeviceBase.HandleError(isSuccess, Messages.ErrorMessageCouldntIntializeDevice);
 
+                var defaultInterfaceHandle = new SafeFileHandle(interfaceHandle, false);
                 var connectedDeviceDefinition = WindowsUsbDeviceFactory.GetDeviceDefinition(defaultInterfaceHandle, DeviceId);
 
                 if (!_WriteBufferSize.HasValue)
